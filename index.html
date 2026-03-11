@@ -1,0 +1,1324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lumière Arts Expo</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #f5f0e8;
+    --parchment: #ede5d4;
+    --sand: #d6c9b0;
+    --umber: #8b7355;
+    --sienna: #a0522d;
+    --charcoal: #2c2825;
+    --warm-black: #1a1612;
+    --gold: #c9a84c;
+    --gold-light: #e8d5a3;
+    --ink: #3d3530;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--cream);
+    color: var(--charcoal);
+    font-family: 'Jost', sans-serif;
+    font-weight: 300;
+    overflow-x: hidden;
+  }
+
+  /* ── TEXTURE OVERLAY ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.6;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.4rem 4rem;
+    background: rgba(245,240,232,0.88);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--sand);
+  }
+
+  .nav-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.5rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    color: var(--warm-black);
+    text-decoration: none;
+  }
+
+  .nav-logo span { color: var(--gold); }
+
+  .nav-links {
+    display: flex;
+    gap: 2.5rem;
+    list-style: none;
+  }
+
+  .nav-links a {
+    text-decoration: none;
+    color: var(--ink);
+    font-size: 0.78rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    transition: color 0.3s;
+  }
+
+  .nav-links a:hover { color: var(--gold); }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-left {
+    background: var(--warm-black);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 8rem 5rem 8rem 4rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-left::before {
+    content: '';
+    position: absolute;
+    top: -60px; left: -60px;
+    width: 400px; height: 400px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(201,168,76,0.12) 0%, transparent 70%);
+  }
+
+  .hero-eyebrow {
+    font-size: 0.72rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 1.8rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .hero-eyebrow::before {
+    content: '';
+    display: block;
+    width: 40px;
+    height: 1px;
+    background: var(--gold);
+  }
+
+  .hero-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(3.5rem, 6vw, 6rem);
+    font-weight: 300;
+    line-height: 1.05;
+    color: var(--cream);
+    margin-bottom: 2rem;
+  }
+
+  .hero-title em {
+    font-style: italic;
+    color: var(--gold-light);
+  }
+
+  .hero-sub {
+    color: var(--sand);
+    font-size: 0.9rem;
+    line-height: 1.8;
+    max-width: 380px;
+    margin-bottom: 3rem;
+  }
+
+  .btn-primary {
+    display: inline-block;
+    padding: 1rem 2.5rem;
+    background: transparent;
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    font-family: 'Jost', sans-serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: all 0.3s;
+    cursor: pointer;
+  }
+
+  .btn-primary:hover {
+    background: var(--gold);
+    color: var(--warm-black);
+  }
+
+  .hero-right {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-mosaic {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    height: 100%;
+    gap: 3px;
+  }
+
+  .mosaic-cell {
+    overflow: hidden;
+    position: relative;
+  }
+
+  .mosaic-cell img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: sepia(20%) contrast(1.05);
+    transition: transform 0.6s ease;
+  }
+
+  .mosaic-cell:hover img { transform: scale(1.05); }
+
+  .mosaic-cell.large { grid-row: 1 / 3; }
+
+  /* placeholder art images */
+  .art-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 0.85rem;
+    color: rgba(255,255,255,0.4);
+    letter-spacing: 0.1em;
+    position: relative;
+  }
+
+  .placeholder-1 { background: linear-gradient(135deg, #3d3028 0%, #5a4a3a 50%, #7a6650 100%); }
+  .placeholder-2 { background: linear-gradient(135deg, #4a3f34 0%, #6b5a48 100%); }
+  .placeholder-3 { background: linear-gradient(135deg, #2e2820 0%, #4a3e32 100%); }
+  .placeholder-4 { background: linear-gradient(135deg, #5c4e40 0%, #8a7060 100%); }
+
+  .placeholder-frame {
+    position: absolute;
+    inset: 12px;
+    border: 1px solid rgba(201,168,76,0.3);
+    pointer-events: none;
+  }
+
+  /* ── SECTION COMMONS ── */
+  section { padding: 7rem 4rem; }
+
+  .section-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--umber);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+  }
+
+  .section-label::after {
+    content: '';
+    display: block;
+    flex: 1;
+    max-width: 60px;
+    height: 1px;
+    background: var(--sand);
+  }
+
+  .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2.2rem, 4vw, 3.5rem);
+    font-weight: 300;
+    line-height: 1.15;
+    color: var(--warm-black);
+    margin-bottom: 1.5rem;
+  }
+
+  .section-title em { font-style: italic; color: var(--sienna); }
+
+  /* ── DIVIDER ── */
+  .ornament-divider {
+    text-align: center;
+    padding: 1rem 0;
+    color: var(--gold);
+    font-size: 1.2rem;
+    letter-spacing: 0.5em;
+    opacity: 0.6;
+  }
+
+  /* ── SCHEDULE ── */
+  #schedule {
+    background: var(--warm-black);
+    color: var(--cream);
+  }
+
+  #schedule .section-title { color: var(--cream); }
+  #schedule .section-label { color: var(--gold); }
+  #schedule .section-label::after { background: rgba(201,168,76,0.3); }
+
+  .schedule-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1px;
+    margin-top: 3.5rem;
+    border: 1px solid rgba(201,168,76,0.2);
+  }
+
+  .schedule-card {
+    padding: 2.5rem;
+    border-right: 1px solid rgba(201,168,76,0.15);
+    position: relative;
+    transition: background 0.3s;
+  }
+
+  .schedule-card:hover { background: rgba(201,168,76,0.06); }
+
+  .schedule-card:last-child { border-right: none; }
+
+  .sched-date {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 3rem;
+    font-weight: 300;
+    color: var(--gold);
+    line-height: 1;
+    margin-bottom: 0.3rem;
+  }
+
+  .sched-month {
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--umber);
+    margin-bottom: 1.5rem;
+  }
+
+  .sched-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.3rem;
+    font-weight: 400;
+    color: var(--cream);
+    margin-bottom: 0.6rem;
+  }
+
+  .sched-desc {
+    font-size: 0.82rem;
+    color: var(--sand);
+    line-height: 1.7;
+  }
+
+  .sched-time {
+    display: inline-block;
+    margin-top: 1.2rem;
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--gold);
+    border: 1px solid rgba(201,168,76,0.4);
+    padding: 0.3rem 0.8rem;
+  }
+
+  /* ── GALLERY ── */
+  #gallery { background: var(--parchment); }
+
+  .gallery-filter {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 2.5rem;
+    flex-wrap: wrap;
+  }
+
+  .filter-btn {
+    padding: 0.5rem 1.4rem;
+    background: transparent;
+    border: 1px solid var(--sand);
+    color: var(--ink);
+    font-family: 'Jost', sans-serif;
+    font-size: 0.72rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+
+  .filter-btn.active, .filter-btn:hover {
+    background: var(--charcoal);
+    border-color: var(--charcoal);
+    color: var(--cream);
+  }
+
+  .gallery-masonry {
+    columns: 3;
+    column-gap: 1.2rem;
+  }
+
+  .gallery-item {
+    break-inside: avoid;
+    margin-bottom: 1.2rem;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    group: true;
+  }
+
+  .gallery-item-inner {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .gallery-img-placeholder {
+    width: 100%;
+    display: block;
+  }
+
+  .gallery-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(26,22,18,0.85) 0%, transparent 50%);
+    opacity: 0;
+    transition: opacity 0.4s;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 1.5rem;
+  }
+
+  .gallery-item:hover .gallery-overlay { opacity: 1; }
+
+  .gallery-overlay h4 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.1rem;
+    color: var(--cream);
+    font-weight: 400;
+  }
+
+  .gallery-overlay p {
+    font-size: 0.72rem;
+    color: var(--sand);
+    letter-spacing: 0.1em;
+    margin-top: 0.2rem;
+  }
+
+  .gallery-overlay .media-tag {
+    position: absolute;
+    top: 1rem; right: 1rem;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--gold);
+    border: 1px solid var(--gold);
+    padding: 0.2rem 0.6rem;
+  }
+
+  /* art cards with generated colors */
+  .art-card-1 { background: linear-gradient(160deg, #6b5e4f, #4a3e34); padding-bottom: 130%; }
+  .art-card-2 { background: linear-gradient(120deg, #5a4030, #8c6e56); padding-bottom: 80%; }
+  .art-card-3 { background: linear-gradient(180deg, #3d3028, #6b5242); padding-bottom: 110%; }
+  .art-card-4 { background: linear-gradient(135deg, #7a6550, #5c4e40); padding-bottom: 90%; }
+  .art-card-5 { background: linear-gradient(160deg, #4e4238, #2e2820); padding-bottom: 120%; }
+  .art-card-6 { background: linear-gradient(140deg, #8a7060, #60504a); padding-bottom: 75%; }
+  .art-card-7 { background: linear-gradient(120deg, #5a4830, #3a3028); padding-bottom: 100%; }
+  .art-card-8 { background: linear-gradient(150deg, #7a5a4a, #4a3830); padding-bottom: 85%; }
+  .art-card-9 { background: linear-gradient(160deg, #3e3530, #6a5548); padding-bottom: 115%; }
+
+  .art-card-inner-label {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .art-icon {
+    font-size: 2rem;
+    opacity: 0.25;
+  }
+
+  .art-card-label-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 0.8rem;
+    color: rgba(245,240,232,0.3);
+    letter-spacing: 0.1em;
+  }
+
+  .video-indicator {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    width: 48px; height: 48px;
+    border-radius: 50%;
+    background: rgba(201,168,76,0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    color: var(--warm-black);
+  }
+
+  /* ── ARTISTS ── */
+  #artists { background: var(--cream); }
+
+  .artists-intro {
+    max-width: 520px;
+    margin-bottom: 4rem;
+  }
+
+  .artists-intro p {
+    font-size: 0.9rem;
+    line-height: 1.9;
+    color: var(--ink);
+    opacity: 0.8;
+  }
+
+  .artists-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 2rem;
+  }
+
+  .artist-card {
+    position: relative;
+    cursor: pointer;
+  }
+
+  .artist-portrait {
+    width: 100%;
+    aspect-ratio: 3/4;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 1.2rem;
+  }
+
+  .artist-portrait-inner {
+    width: 100%;
+    height: 100%;
+    transition: transform 0.5s ease;
+  }
+
+  .artist-card:hover .artist-portrait-inner { transform: scale(1.04); }
+
+  .portrait-1 { background: linear-gradient(160deg, #7a6050, #4a3830); }
+  .portrait-2 { background: linear-gradient(140deg, #5e5248, #3c3430); }
+  .portrait-3 { background: linear-gradient(160deg, #8a7060, #5a4840); }
+  .portrait-4 { background: linear-gradient(150deg, #6a5848, #2e2820); }
+
+  .portrait-frame {
+    position: absolute;
+    inset: 10px;
+    border: 1px solid rgba(201,168,76,0.35);
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  .artist-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.35rem;
+    font-weight: 400;
+    color: var(--warm-black);
+    margin-bottom: 0.3rem;
+  }
+
+  .artist-medium {
+    font-size: 0.72rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--umber);
+    margin-bottom: 0.8rem;
+  }
+
+  .artist-bio {
+    font-size: 0.82rem;
+    line-height: 1.7;
+    color: var(--ink);
+    opacity: 0.75;
+  }
+
+  .artist-works-count {
+    display: inline-block;
+    margin-top: 1rem;
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--gold);
+    border-bottom: 1px solid var(--gold);
+    padding-bottom: 2px;
+  }
+
+  /* ── SUBMIT ── */
+  #submit {
+    background: var(--parchment);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 5rem;
+    align-items: start;
+  }
+
+  .submit-info h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2rem, 3.5vw, 3rem);
+    font-weight: 300;
+    line-height: 1.2;
+    color: var(--warm-black);
+    margin-bottom: 1.5rem;
+  }
+
+  .submit-info h2 em { font-style: italic; color: var(--sienna); }
+
+  .submit-info p {
+    font-size: 0.88rem;
+    line-height: 1.9;
+    color: var(--ink);
+    opacity: 0.8;
+    margin-bottom: 2rem;
+  }
+
+  .submit-guidelines {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+  }
+
+  .submit-guidelines li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.8rem;
+    font-size: 0.82rem;
+    color: var(--ink);
+    line-height: 1.6;
+  }
+
+  .submit-guidelines li::before {
+    content: '—';
+    color: var(--gold);
+    flex-shrink: 0;
+    margin-top: 0.05rem;
+  }
+
+  .submit-form { padding-top: 0.5rem; }
+
+  .form-group {
+    margin-bottom: 1.5rem;
+  }
+
+  .form-group label {
+    display: block;
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--umber);
+    margin-bottom: 0.5rem;
+  }
+
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    width: 100%;
+    padding: 0.9rem 1rem;
+    background: var(--cream);
+    border: 1px solid var(--sand);
+    color: var(--charcoal);
+    font-family: 'Jost', sans-serif;
+    font-size: 0.88rem;
+    font-weight: 300;
+    outline: none;
+    transition: border-color 0.3s;
+    appearance: none;
+  }
+
+  .form-group input:focus,
+  .form-group select:focus,
+  .form-group textarea:focus {
+    border-color: var(--gold);
+  }
+
+  .form-group textarea { resize: vertical; min-height: 110px; }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+
+  .upload-area {
+    border: 1.5px dashed var(--sand);
+    padding: 2.5rem;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color 0.3s, background 0.3s;
+    margin-bottom: 1.5rem;
+  }
+
+  .upload-area:hover {
+    border-color: var(--gold);
+    background: rgba(201,168,76,0.04);
+  }
+
+  .upload-icon {
+    font-size: 2rem;
+    margin-bottom: 0.8rem;
+    opacity: 0.4;
+  }
+
+  .upload-area p {
+    font-size: 0.78rem;
+    color: var(--umber);
+    margin: 0;
+  }
+
+  .upload-area span {
+    font-size: 0.7rem;
+    color: var(--sand);
+    display: block;
+    margin-top: 0.3rem;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--warm-black);
+    color: var(--sand);
+    padding: 4rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 3rem;
+    align-items: start;
+  }
+
+  .footer-brand .nav-logo {
+    display: block;
+    margin-bottom: 1rem;
+    color: var(--cream);
+  }
+
+  .footer-brand p {
+    font-size: 0.82rem;
+    line-height: 1.8;
+    opacity: 0.6;
+  }
+
+  .footer-col h5 {
+    font-size: 0.7rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 1.2rem;
+  }
+
+  .footer-col ul { list-style: none; }
+
+  .footer-col ul li {
+    margin-bottom: 0.6rem;
+    font-size: 0.82rem;
+    opacity: 0.6;
+  }
+
+  .footer-col ul li a {
+    color: inherit;
+    text-decoration: none;
+    transition: opacity 0.3s;
+  }
+
+  .footer-col ul li a:hover { opacity: 1; }
+
+  .footer-bottom {
+    background: var(--warm-black);
+    border-top: 1px solid rgba(255,255,255,0.08);
+    padding: 1.5rem 4rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .footer-bottom p { font-size: 0.75rem; color: rgba(214,201,176,0.4); }
+
+  .gold-rule {
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--gold), transparent);
+    margin: 1rem 0;
+    opacity: 0.4;
+  }
+
+  /* ── LIGHTBOX ── */
+  .lightbox {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(26,22,18,0.95);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .lightbox.open { display: flex; }
+
+  .lightbox-content {
+    max-width: 700px;
+    width: 90%;
+    position: relative;
+  }
+
+  .lightbox-close {
+    position: absolute;
+    top: -2.5rem;
+    right: 0;
+    color: var(--sand);
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    letter-spacing: 0.1em;
+    font-family: 'Jost', sans-serif;
+  }
+
+  .lightbox-img {
+    width: 100%;
+    aspect-ratio: 4/3;
+    background: linear-gradient(135deg, #3d3028, #6b5242);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(245,240,232,0.2);
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+  }
+
+  .lightbox-meta {
+    padding: 1.5rem 0;
+    border-bottom: 1px solid rgba(201,168,76,0.2);
+  }
+
+  .lightbox-meta h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.6rem;
+    font-weight: 300;
+    color: var(--cream);
+    margin-bottom: 0.3rem;
+  }
+
+  .lightbox-meta p { font-size: 0.8rem; color: var(--sand); }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .fade-up {
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards;
+  }
+
+  .delay-1 { animation-delay: 0.15s; }
+  .delay-2 { animation-delay: 0.3s; }
+  .delay-3 { animation-delay: 0.45s; }
+  .delay-4 { animation-delay: 0.6s; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    nav { padding: 1.2rem 2rem; }
+    .nav-links { gap: 1.5rem; }
+    .hero { grid-template-columns: 1fr; }
+    .hero-left { padding: 9rem 2rem 4rem; min-height: 60vh; }
+    .hero-right { min-height: 50vw; }
+    section { padding: 5rem 2rem; }
+    #submit { grid-template-columns: 1fr; gap: 3rem; }
+    footer { grid-template-columns: 1fr; gap: 2rem; padding: 3rem 2rem; }
+    .footer-bottom { padding: 1.5rem 2rem; flex-direction: column; gap: 0.5rem; text-align: center; }
+    .gallery-masonry { columns: 2; }
+    .form-row { grid-template-columns: 1fr; }
+  }
+
+  @media (max-width: 600px) {
+    .nav-links { display: none; }
+    .gallery-masonry { columns: 1; }
+    .schedule-grid { grid-template-columns: 1fr; }
+    .artists-grid { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">Lumière <span>Expo</span></a>
+  <ul class="nav-links">
+    <li><a href="#schedule">Schedule</a></li>
+    <li><a href="#gallery">Gallery</a></li>
+    <li><a href="#artists">Artists</a></li>
+    <li><a href="#submit">Submit</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-left">
+    <p class="hero-eyebrow fade-up">Annual Arts Exposition · 2025</p>
+    <h1 class="hero-title fade-up delay-1">Where <em>Art</em><br>Finds Its<br>Voice</h1>
+    <p class="hero-sub fade-up delay-2">A curated showcase of emerging and established artists, celebrating the depth, craft, and humanity of classical and contemporary fine arts.</p>
+    <a href="#gallery" class="btn-primary fade-up delay-3">Explore the Gallery</a>
+  </div>
+  <div class="hero-right">
+    <div class="hero-mosaic">
+      <div class="mosaic-cell large">
+        <div class="art-placeholder placeholder-1">
+          <div class="placeholder-frame"></div>
+          <span>Artwork</span>
+        </div>
+      </div>
+      <div class="mosaic-cell">
+        <div class="art-placeholder placeholder-2">
+          <div class="placeholder-frame"></div>
+        </div>
+      </div>
+      <div class="mosaic-cell">
+        <div class="art-placeholder placeholder-3">
+          <div class="placeholder-frame"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="ornament-divider">✦ &nbsp; ✦ &nbsp; ✦</div>
+
+<!-- SCHEDULE -->
+<section id="schedule">
+  <div class="section-label">Programme</div>
+  <h2 class="section-title">Events &amp; <em>Schedule</em></h2>
+  <div class="schedule-grid">
+    <div class="schedule-card">
+      <div class="sched-date">14</div>
+      <div class="sched-month">March 2025</div>
+      <div class="sched-title">Opening Ceremony</div>
+      <div class="sched-desc">A formal welcome from the curators and participating artists, followed by a guided first walk of the main gallery hall.</div>
+      <div class="sched-time">6:00 PM – 8:00 PM</div>
+    </div>
+    <div class="schedule-card">
+      <div class="sched-date">15</div>
+      <div class="sched-month">March 2025</div>
+      <div class="sched-title">Artist Talk: Craft &amp; Process</div>
+      <div class="sched-desc">Selected artists discuss their creative processes, materials, and the stories behind their featured works in an intimate forum.</div>
+      <div class="sched-time">10:00 AM – 12:00 NN</div>
+    </div>
+    <div class="schedule-card">
+      <div class="sched-date">16</div>
+      <div class="sched-month">March 2025</div>
+      <div class="sched-title">Live Demonstration</div>
+      <div class="sched-desc">Watch artists create in real time — oil painting, charcoal sketching, and mixed media — in the open studio wing.</div>
+      <div class="sched-time">2:00 PM – 5:00 PM</div>
+    </div>
+    <div class="schedule-card">
+      <div class="sched-date">17</div>
+      <div class="sched-month">March 2025</div>
+      <div class="sched-title">Awards &amp; Closing Night</div>
+      <div class="sched-desc">Recognition of outstanding works across categories, followed by a reception and final viewing of the complete exhibit.</div>
+      <div class="sched-time">5:00 PM – 9:00 PM</div>
+    </div>
+  </div>
+</section>
+
+<!-- GALLERY -->
+<section id="gallery">
+  <div class="section-label">Works on Display</div>
+  <h2 class="section-title">The <em>Gallery</em></h2>
+  <div class="gallery-filter">
+    <button class="filter-btn active" onclick="filterGallery('all', this)">All Works</button>
+    <button class="filter-btn" onclick="filterGallery('painting', this)">Painting</button>
+    <button class="filter-btn" onclick="filterGallery('sculpture', this)">Sculpture</button>
+    <button class="filter-btn" onclick="filterGallery('photography', this)">Photography</button>
+    <button class="filter-btn" onclick="filterGallery('video', this)">Video Art</button>
+  </div>
+  <div class="gallery-masonry" id="galleryGrid">
+
+    <div class="gallery-item" data-cat="painting" onclick="openLightbox('Solitude in Ochre', 'Oil on Canvas · Maria Santos')">
+      <div class="gallery-item-inner">
+        <div class="art-card-1 gallery-img-placeholder" style="position:relative;">
+          <div class="art-card-inner-label"><div class="art-icon">🖼</div><div class="art-card-label-text">Upload your artwork</div></div>
+        </div>
+        <div class="gallery-overlay">
+          <div class="media-tag">Painting</div>
+          <h4>Solitude in Ochre</h4>
+          <p>Maria Santos · Oil on Canvas</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="gallery-item" data-cat="photography" onclick="openLightbox('Threshold', 'Black &amp; White Photography · Leon Cruz')">
+      <div class="gallery-item-inner">
+        <div class="art-card-2 gallery-img-placeholder" style="position:relative;">
+          <div class="art-card-inner-label"><div class="art-icon">📷</div><div class="art-card-label-text">Upload your artwork</div></div>
+        </div>
+        <div class="gallery-overlay">
+          <div class="media-tag">Photography</div>
+          <h4>Threshold</h4>
+          <p>Leon Cruz · B&amp;W Photography</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="gallery-item" data-cat="video" onclick="openLightbox('Memoria', 'Video Installation · Ana Reyes')">
+      <div class="gallery-item-inner">
+        <div class="art-card-3 gallery-img-placeholder" style="position:relative;">
+          <div class="art-card-inner-label"><div class="video-indicator">▶</div></div>
+        </div>
+        <div class="gallery-overlay">
+          <div class="media-tag">Video</div>
+          <h4>Memoria</h4>
+          <p>Ana Reyes · Video Installation</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="gallery-item" data-cat="sculpture" onclick="openLightbox('Form No. 7', 'Bronze Sculpture · Carlos Dizon')">
+      <div class="gallery-item-inner">
+        <div class="art-card-4 gallery-img-placeholder" style="position:relative;">
+          <div class="art-card-inner-label"><div class="art-icon">🗿</div><div class="art-card-label-text">Upload your artwork</div></div>
+        </div>
+        <div class="gallery-overlay">
+          <div class="media-tag">Sculpture</div>
+          <h4>Form No. 7</h4>
+          <p>Carlos Dizon · Bronze</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="gallery-item" data-cat="painting" onclick="openLightbox('Garden of Hours', 'Watercolor · Sofia Lim')">
+      <div class="gallery-item-inner">
+        <div class="art-card-5 gallery-img-placeholder" style="position:relative;">
+          <div class="art-card-inner-label"><div class="art-icon">🖼</div><div class="art-card-label-text">Upload your artwork</div></div>
+        </div>
+        <div class="gallery-overlay">
+          <div class="media-tag">Painting</div>
+          <h4>Garden of Hours</h4>
+          <p>Sofia Lim · Watercolor</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="gallery-item" data-cat="photography" onclick="openLightbox('In Between', 'Color Photography · Paul Torres')">
+      <div class="gallery-item-inner">
+        <div class="art-card-6 gallery-img-placeholder" style="position:relative;">
+          <div class="art-card-inner-label"><div class="art-icon">📷</div><div class="art-card-label-text">Upload your artwork</div></div>
+        </div>
+        <div class="gallery-overlay">
+          <div class="media-tag">Photography</div>
+          <h4>In Between</h4>
+          <p>Paul Torres · Color Photography</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="gallery-item" data-cat="video" onclick="openLightbox('Echo Chamber', 'Video Art · Iris Navarro')">
+      <div class="gallery-item-inner">
+        <div class="art-card-7 gallery-img-placeholder" style="position:relative;">
+          <div class="art-card-inner-label"><div class="video-indicator">▶</div></div>
+        </div>
+        <div class="gallery-overlay">
+          <div class="media-tag">Video</div>
+          <h4>Echo Chamber</h4>
+          <p>Iris Navarro · Video Art</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="gallery-item" data-cat="painting" onclick="openLightbox('Still Life No. 3', 'Acrylic · Marco Villanueva')">
+      <div class="gallery-item-inner">
+        <div class="art-card-8 gallery-img-placeholder" style="position:relative;">
+          <div class="art-card-inner-label"><div class="art-icon">🖼</div><div class="art-card-label-text">Upload your artwork</div></div>
+        </div>
+        <div class="gallery-overlay">
+          <div class="media-tag">Painting</div>
+          <h4>Still Life No. 3</h4>
+          <p>Marco Villanueva · Acrylic</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="gallery-item" data-cat="sculpture" onclick="openLightbox('Vessel', 'Ceramic · Dani Flores')">
+      <div class="gallery-item-inner">
+        <div class="art-card-9 gallery-img-placeholder" style="position:relative;">
+          <div class="art-card-inner-label"><div class="art-icon">🗿</div><div class="art-card-label-text">Upload your artwork</div></div>
+        </div>
+        <div class="gallery-overlay">
+          <div class="media-tag">Sculpture</div>
+          <h4>Vessel</h4>
+          <p>Dani Flores · Ceramic</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ARTISTS -->
+<section id="artists">
+  <div class="section-label">Featured Creators</div>
+  <h2 class="section-title">The <em>Artists</em></h2>
+  <div class="artists-intro">
+    <p>This year's exposition brings together a remarkable ensemble of artists whose works span medium, era, and intention — united by a commitment to craft and authentic expression.</p>
+  </div>
+  <div class="artists-grid">
+    <div class="artist-card">
+      <div class="artist-portrait">
+        <div class="artist-portrait-inner portrait-1">
+          <div class="portrait-frame"></div>
+        </div>
+      </div>
+      <div class="artist-name">Maria Santos</div>
+      <div class="artist-medium">Oil Painting · Mixed Media</div>
+      <div class="artist-bio">Known for her earthy palettes and introspective compositions, Maria explores themes of memory and place through layered oil techniques.</div>
+      <span class="artist-works-count">4 Works on Display</span>
+    </div>
+    <div class="artist-card">
+      <div class="artist-portrait">
+        <div class="artist-portrait-inner portrait-2">
+          <div class="portrait-frame"></div>
+        </div>
+      </div>
+      <div class="artist-name">Leon Cruz</div>
+      <div class="artist-medium">Photography · Printmaking</div>
+      <div class="artist-bio">Leon's documentary-style photography captures liminal spaces and the quiet moments between events, printed on archival silver gelatin.</div>
+      <span class="artist-works-count">3 Works on Display</span>
+    </div>
+    <div class="artist-card">
+      <div class="artist-portrait">
+        <div class="artist-portrait-inner portrait-3">
+          <div class="portrait-frame"></div>
+        </div>
+      </div>
+      <div class="artist-name">Ana Reyes</div>
+      <div class="artist-medium">Video Installation · Digital Art</div>
+      <div class="artist-bio">Ana creates immersive video works that blur the boundaries between still image and motion, inviting meditative engagement from viewers.</div>
+      <span class="artist-works-count">2 Works on Display</span>
+    </div>
+    <div class="artist-card">
+      <div class="artist-portrait">
+        <div class="artist-portrait-inner portrait-4">
+          <div class="portrait-frame"></div>
+        </div>
+      </div>
+      <div class="artist-name">Carlos Dizon</div>
+      <div class="artist-medium">Sculpture · Ceramics</div>
+      <div class="artist-bio">Working primarily in bronze and terracotta, Carlos sculpts abstract forms that reference the human body without depicting it literally.</div>
+      <span class="artist-works-count">5 Works on Display</span>
+    </div>
+  </div>
+</section>
+
+<div class="gold-rule" style="margin: 0 4rem;"></div>
+
+<!-- SUBMIT -->
+<section id="submit">
+  <div class="submit-info">
+    <div class="section-label">Participate</div>
+    <h2>Submit Your <em>Work</em> to the Expo</h2>
+    <p>We welcome submissions from all artists — student, emerging, and established. Works are reviewed by our curatorial panel for appropriateness, quality, and thematic fit before being featured in the online and physical gallery.</p>
+    <ul class="submit-guidelines">
+      <li>All mediums accepted: painting, photography, sculpture, digital, video</li>
+      <li>Images must be minimum 2000px on the shortest side, in JPG or PNG</li>
+      <li>Videos must be uploaded as MP4 or MOV, maximum 500 MB</li>
+      <li>Submissions are reviewed within 5–7 business days</li>
+      <li>Content must be original work by the submitting artist</li>
+      <li>Works containing inappropriate or offensive content will not be accepted</li>
+    </ul>
+  </div>
+  <div class="submit-form">
+    <div class="form-row">
+      <div class="form-group">
+        <label>First Name</label>
+        <input type="text" placeholder="Maria">
+      </div>
+      <div class="form-group">
+        <label>Last Name</label>
+        <input type="text" placeholder="Santos">
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Email Address</label>
+      <input type="email" placeholder="artist@example.com">
+    </div>
+    <div class="form-group">
+      <label>Artwork Title</label>
+      <input type="text" placeholder="Title of your work">
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Medium / Category</label>
+        <select>
+          <option value="">Select medium</option>
+          <option>Oil Painting</option>
+          <option>Watercolor</option>
+          <option>Acrylic</option>
+          <option>Drawing / Charcoal</option>
+          <option>Photography</option>
+          <option>Sculpture</option>
+          <option>Digital Art</option>
+          <option>Video / Film</option>
+          <option>Mixed Media</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Year Created</label>
+        <input type="text" placeholder="2024">
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Artist Statement (optional)</label>
+      <textarea placeholder="Briefly describe your work and intent…"></textarea>
+    </div>
+    <div class="upload-area" onclick="this.querySelector('input').click()">
+      <input type="file" style="display:none" accept="image/*,video/*" multiple>
+      <div class="upload-icon">⬆</div>
+      <p>Click to upload artwork files</p>
+      <span>JPG, PNG, MP4, MOV — up to 500 MB</span>
+    </div>
+    <button class="btn-primary" style="width:100%; text-align:center; font-size:0.75rem;" onclick="handleSubmit(event)">Submit for Review</button>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-brand">
+    <a href="#" class="nav-logo">Lumière <span>Expo</span></a>
+    <div class="gold-rule"></div>
+    <p>A celebration of fine arts, craft, and human expression. Held annually to honor and showcase the best in visual artistry.</p>
+  </div>
+  <div class="footer-col">
+    <h5>Navigation</h5>
+    <ul>
+      <li><a href="#schedule">Schedule</a></li>
+      <li><a href="#gallery">Gallery</a></li>
+      <li><a href="#artists">Artists</a></li>
+      <li><a href="#submit">Submit Work</a></li>
+    </ul>
+  </div>
+  <div class="footer-col">
+    <h5>Contact</h5>
+    <ul>
+      <li>info@lumiereexpo.art</li>
+      <li>+63 912 345 6789</li>
+      <li>Main Gallery Hall, City Arts Center</li>
+      <li>March 14–17, 2025</li>
+    </ul>
+  </div>
+</footer>
+<div class="footer-bottom">
+  <p>© 2025 Lumière Arts Expo. All rights reserved.</p>
+  <p>All submitted artworks remain property of their respective artists.</p>
+</div>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox(event)">
+  <div class="lightbox-content">
+    <button class="lightbox-close" onclick="document.getElementById('lightbox').classList.remove('open')">✕ Close</button>
+    <div class="lightbox-img" id="lightboxImg">[ Artwork Preview ]</div>
+    <div class="lightbox-meta">
+      <h3 id="lightboxTitle">Artwork Title</h3>
+      <p id="lightboxMeta">Medium · Artist Name</p>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Gallery filter
+  function filterGallery(cat, btn) {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.gallery-item').forEach(item => {
+      if (cat === 'all' || item.dataset.cat === cat) {
+        item.style.display = '';
+      } else {
+        item.style.display = 'none';
+      }
+    });
+  }
+
+  // Lightbox
+  function openLightbox(title, meta) {
+    document.getElementById('lightboxTitle').textContent = title;
+    document.getElementById('lightboxMeta').textContent = meta;
+    document.getElementById('lightbox').classList.add('open');
+  }
+
+  function closeLightbox(e) {
+    if (e.target === document.getElementById('lightbox')) {
+      document.getElementById('lightbox').classList.remove('open');
+    }
+  }
+
+  // Submit handler
+  function handleSubmit(e) {
+    e.preventDefault();
+    const btn = e.target;
+    btn.textContent = '✓ Submission Received';
+    btn.style.background = 'var(--gold)';
+    btn.style.color = 'var(--warm-black)';
+    btn.style.borderColor = 'var(--gold)';
+    setTimeout(() => {
+      btn.textContent = 'Submit for Review';
+      btn.style.background = '';
+      btn.style.color = '';
+      btn.style.borderColor = '';
+    }, 3000);
+  }
+
+  // Upload area label update
+  document.querySelector('.upload-area input').addEventListener('change', function() {
+    if (this.files.length > 0) {
+      this.closest('.upload-area').querySelector('p').textContent =
+        this.files.length + ' file(s) selected';
+    }
+  });
+
+  // Scroll animations
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.opacity = '1';
+        entry.target.style.transform = 'translateY(0)';
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.schedule-card, .gallery-item, .artist-card').forEach(el => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(20px)';
+    el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+    observer.observe(el);
+  });
+</script>
+</body>
+</html>
