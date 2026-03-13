@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>La Galeria Filipina</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=Crimson+Pro:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:        #18140f;
+    --surface:   #211c15;
+    --border:    #3a3020;
+    --gold:      #c8a96e;
+    --gold-dim:  #7a6540;
+    --cream:     #e8dfc8;
+    --muted:     #9a8e7a;
+    --text:      #d4c8b0;
+  }
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Crimson Pro', Georgia, serif;
+    font-weight: 300;
+    overflow-x: hidden;
+  }
+
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23g)' opacity='0.035'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9000;
+  }
+
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 500;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.6rem 3.5rem;
+    background: linear-gradient(to bottom, rgba(24,20,15,0.97) 0%, transparent 100%);
+  }
+
+  .nav-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.25rem;
+    font-weight: 400;
+    letter-spacing: 0.06em;
+    color: var(--cream);
+    text-decoration: none;
+  }
+
+  .nav-title span { color: var(--gold); font-style: italic; }
+  .nav-counter { font-size: 0.72rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--gold-dim); }
+
+  .intro {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 4rem 2rem;
+    position: relative;
+  }
+
+  .intro::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at center, rgba(200,169,110,0.06) 0%, transparent 65%);
+    pointer-events: none;
+  }
+
+  .intro-label { font-size: 0.68rem; letter-spacing: 0.4em; text-transform: uppercase; color: var(--gold); margin-bottom: 2rem; opacity: 0; animation: riseIn 1s ease 0.3s forwards; }
+  .intro-title { font-family: 'Playfair Display', serif; font-size: clamp(3rem, 8vw, 7rem); font-weight: 400; line-height: 1.05; color: var(--cream); margin-bottom: 1.5rem; opacity: 0; animation: riseIn 1s ease 0.55s forwards; }
+  .intro-title em { font-style: italic; color: var(--gold); }
+  .intro-sub { font-size: 1.05rem; line-height: 1.9; color: var(--muted); max-width: 480px; margin-bottom: 3.5rem; opacity: 0; animation: riseIn 1s ease 0.8s forwards; }
+
+  .scroll-cue { display: flex; flex-direction: column; align-items: center; gap: 0.6rem; opacity: 0; animation: riseIn 1s ease 1.1s forwards; }
+  .scroll-cue span { font-size: 0.65rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--gold-dim); }
+  .scroll-line { width: 1px; height: 50px; background: linear-gradient(to bottom, var(--gold), transparent); animation: scrollPulse 2s ease-in-out infinite; }
+
+  @keyframes scrollPulse { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
+
+  .gallery { position: relative; }
+
+  .artwork {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 55% 45%;
+    border-top: 1px solid var(--border);
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.9s ease, transform 0.9s ease;
+  }
+
+  .artwork.visible { opacity: 1; transform: translateY(0); }
+
+  .artwork-media { position: relative; overflow: hidden; min-height: 100vh; background: #1a1510; }
+  .artwork-media img, .artwork-media video { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.8s ease; }
+  .artwork:hover .artwork-media img, .artwork:hover .artwork-media video { transform: scale(1.02); }
+
+  .artwork-number { position: absolute; top: 2rem; left: 2rem; font-family: 'Playfair Display', serif; font-size: 4rem; font-weight: 400; color: rgba(200,169,110,0.12); line-height: 1; pointer-events: none; z-index: 2; }
+
+  .artwork-text { display: flex; flex-direction: column; justify-content: center; padding: 5rem 4rem 5rem 5rem; position: relative; background: var(--surface); }
+  .artwork-text::before { content: ''; position: absolute; left: 0; top: 15%; bottom: 15%; width: 1px; background: linear-gradient(to bottom, transparent, var(--gold-dim), transparent); }
+
+  .artwork-index { font-size: 0.65rem; letter-spacing: 0.35em; text-transform: uppercase; color: var(--gold); margin-bottom: 2rem; }
+  .artwork-title { font-family: 'Playfair Display', serif; font-size: clamp(1.8rem, 3vw, 2.8rem); font-weight: 400; line-height: 1.15; color: var(--cream); margin-bottom: 0.8rem; }
+  .artwork-artist { font-size: 0.8rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); margin-bottom: 2.5rem; padding-bottom: 2rem; border-bottom: 1px solid var(--border); min-height: 1.2em; }
+  .artwork-description { font-size: 1.05rem; line-height: 1.95; color: var(--muted); font-style: italic; }
+  .artwork-tag { display: inline-block; margin-top: 2.5rem; font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold-dim); border: 1px solid var(--border); padding: 0.35rem 0.9rem; align-self: flex-start; }
+  .tag-video { border-color: rgba(200,169,110,0.4); color: var(--gold); }
+
+  /* TEAM */
+  .team {
+    padding: 8rem 4rem;
+    border-top: 1px solid var(--border);
+    text-align: center;
+    position: relative;
+  }
+
+  .team::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at center, rgba(200,169,110,0.04) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  .team-label { font-size: 0.68rem; letter-spacing: 0.4em; text-transform: uppercase; color: var(--gold); margin-bottom: 1rem; }
+  .team-title { font-family: 'Playfair Display', serif; font-size: clamp(2.5rem, 5vw, 4.5rem); font-weight: 400; color: var(--cream); margin-bottom: 1rem; }
+  .team-title em { font-style: italic; color: var(--gold); }
+
+  .team-rule { width: 80px; height: 1px; background: linear-gradient(to right, transparent, var(--gold), transparent); margin: 2rem auto 4rem; }
+
+  .team-names {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.4rem 0;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .team-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    font-weight: 400;
+    color: var(--text);
+    letter-spacing: 0.04em;
+    padding: 0.4rem 1.2rem;
+    transition: color 0.3s;
+    white-space: nowrap;
+  }
+
+  .team-name:hover { color: var(--gold); }
+
+  .team-name.highlight {
+    color: var(--gold);
+    font-style: italic;
+    font-size: 1.2rem;
+  }
+
+  .team-separator {
+    color: var(--gold-dim);
+    font-size: 0.5rem;
+    opacity: 0.5;
+    padding: 0.4rem 0;
+    display: flex;
+    align-items: center;
+  }
+
+  .closing { min-height: 40vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 5rem 2rem; border-top: 1px solid var(--border); }
+  .closing-ornament { font-size: 1rem; letter-spacing: 0.6em; color: var(--gold); opacity: 0.5; margin-bottom: 2rem; }
+  .closing h2 { font-family: 'Playfair Display', serif; font-size: clamp(1.4rem, 2.5vw, 2rem); font-weight: 400; color: var(--cream); margin-bottom: 1rem; }
+  .closing p { font-size: 0.85rem; color: var(--muted); letter-spacing: 0.08em; }
+
+  @keyframes riseIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+  @media (max-width: 768px) {
+    nav { padding: 1.2rem 1.5rem; }
+    .artwork { grid-template-columns: 1fr; min-height: auto; }
+    .artwork-media { min-height: 65vw; }
+    .artwork-text { padding: 3rem 1.8rem; }
+    .artwork-text::before { display: none; }
+    .team { padding: 5rem 2rem; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="#" class="nav-title">La <span>Galeria</span> Filipina</a>
+  <div class="nav-counter" id="navCounter">— Works on Display</div>
+</nav>
+
+<section class="intro">
+  <p class="intro-label">A Curated Exhibition</p>
+  <h1 class="intro-title">La <em>Galeria</em><br>Filipina</h1>
+  <p class="intro-sub">A collection of works that speak — of land, memory, form, and feeling. Scroll to enter the gallery.</p>
+  <div class="scroll-cue"><span>Scroll</span><div class="scroll-line"></div></div>
+</section>
+
+<div class="gallery" id="gallery">
+
+  <article class="artwork">
+    <div class="artwork-media"><div class="artwork-number">01</div>
+      <img src="images/asher.jpg" alt="Asher" onerror="this.style.display='none';this.parentNode.style.background='linear-gradient(135deg,#3d3028,#6b5242)'">
+    </div>
+    <div class="artwork-text">
+      <div class="artwork-index">Work No. 01</div>
+      <h2 class="artwork-title">Asher</h2>
+      <div class="artwork-artist">Keisha Nicole Reodique</div>
+      <p class="artwork-description">A child's joy is rendered in warm, luminous paint — the boy's gentle smile holds a whole afternoon, while the familiar red figure beside him hums with the sweetness of a cherished memory.</p>
+      <span class="artwork-tag">Oil on Canvas</span>
+    </div>
+  </article>
+
+  <article class="artwork">
+    <div class="artwork-media"><div class="artwork-number">02</div>
+      <img src="images/bingwitero.jpg" alt="Bingwitero" onerror="this.style.display='none';this.parentNode.style.background='linear-gradient(135deg,#3a2e10,#6a5a20)'">
+    </div>
+    <div class="artwork-text">
+      <div class="artwork-index">Work No. 02</div>
+      <h2 class="artwork-title">Bingwitero</h2>
+      <div class="artwork-artist">&nbsp;</div>
+      <p class="artwork-description">A lone fisherman stands upon his vessel in a sea of burning amber, the world dissolving into wave and flame — below him, the fish rise like silver dreams from the deep.</p>
+      <span class="artwork-tag">Colored Pencil</span>
+    </div>
+  </article>
+
+  <article class="artwork">
+    <div class="artwork-media"><div class="artwork-number">03</div>
+      <img src="images/killing-me-softly.jpg" alt="Killing Me Softly" onerror="this.style.display='none';this.parentNode.style.background='linear-gradient(135deg,#3d2028,#6b3040)'">
+    </div>
+    <div class="artwork-text">
+      <div class="artwork-index">Work No. 03</div>
+      <h2 class="artwork-title">Killing Me Softly</h2>
+      <div class="artwork-artist">Aubrey Haille B. Abalos</div>
+      <p class="artwork-description">From a wound that blooms rather than bleeds, flowers erupt in defiant color — the figure gazes upward with quiet knowing, as though beauty and pain have always shared the same root.</p>
+      <span class="artwork-tag">Mixed Media</span>
+    </div>
+  </article>
+
+  <article class="artwork">
+    <div class="artwork-media"><div class="artwork-number">04</div>
+      <img src="images/please-dont-touch.jpg" alt="Please Don't Touch" onerror="this.style.display='none';this.parentNode.style.background='linear-gradient(135deg,#5c3028,#8b5040)'">
+    </div>
+    <div class="artwork-text">
+      <div class="artwork-index">Work No. 04</div>
+      <h2 class="artwork-title">Please Don't Touch</h2>
+      <div class="artwork-artist">Keisha Reodique</div>
+      <p class="artwork-description">Bathed entirely in terracotta warmth, the woman holds her own gaze like a secret — poised, self-contained, a portrait that asks to be seen but never possessed.</p>
+      <span class="artwork-tag">Oil on Canvas</span>
+    </div>
+  </article>
+
+  <article class="artwork">
+    <div class="artwork-media"><div class="artwork-number">05</div>
+      <img src="images/still-life.jpg" alt="Still Life" onerror="this.style.display='none';this.parentNode.style.background='linear-gradient(135deg,#4a3e2a,#7a6840)'">
+    </div>
+    <div class="artwork-text">
+      <div class="artwork-index">Work No. 05</div>
+      <h2 class="artwork-title">Untitled Still Life</h2>
+      <div class="artwork-artist">&nbsp;</div>
+      <p class="artwork-description">Grapes and pears spill from a woven basket in the old-world tradition, framed in gilded wood — abundance made still, preserved in the amber light of a quieter century.</p>
+      <span class="artwork-tag">Oil on Canvas</span>
+    </div>
+  </article>
+
+  <article class="artwork">
+    <div class="artwork-media"><div class="artwork-number">06</div>
+      <img src="images/landscape-vals.jpg" alt="Landscape" onerror="this.style.display='none';this.parentNode.style.background='linear-gradient(135deg,#283428,#405a40)'">
+    </div>
+    <div class="artwork-text">
+      <div class="artwork-index">Work No. 06</div>
+      <h2 class="artwork-title">Untitled Landscape</h2>
+      <div class="artwork-artist">Vals</div>
+      <p class="artwork-description">A white house rests at the water's edge beneath a canopy of green, its reflection trembling in the stillness — a place that exists somewhere between memory and longing.</p>
+      <span class="artwork-tag">Oil on Canvas</span>
+    </div>
+  </article>
+
+  <article class="artwork">
+    <div class="artwork-media"><div class="artwork-number">07</div>
+      <img src="images/fallen-angel.jpg" alt="The Fallen Angel" onerror="this.style.display='none';this.parentNode.style.background='linear-gradient(135deg,#2e3040,#4a4e6a)'">
+    </div>
+    <div class="artwork-text">
+      <div class="artwork-index">Work No. 07</div>
+      <h2 class="artwork-title">The Fallen Angel</h2>
+      <div class="artwork-artist">Bethany Halaman</div>
+      <p class="artwork-description">He sits folded into himself against a darkening sky, wings worn and heavy — not defeated, but resting, as though even the fallen carry a grace they cannot quite let go of.</p>
+      <span class="artwork-tag">Watercolor</span>
+    </div>
+  </article>
+
+  <article class="artwork">
+    <div class="artwork-media"><div class="artwork-number">08</div>
+      <img src="images/patriarch.jpg" alt="The Patriarch" onerror="this.style.display='none';this.parentNode.style.background='linear-gradient(135deg,#2a2830,#4a4858)'">
+    </div>
+    <div class="artwork-text">
+      <div class="artwork-index">Work No. 08</div>
+      <h2 class="artwork-title">The Patriarch</h2>
+      <div class="artwork-artist">Bethany Halaman</div>
+      <p class="artwork-description">Rendered in ink and shadow, the figure turns with the quiet confidence of someone who has already decided the outcome — a flash of red at the collar, the only warmth in a storm of grey.</p>
+      <span class="artwork-tag">Ink & Watercolor</span>
+    </div>
+  </article>
+
+  <article class="artwork">
+    <div class="artwork-media"><div class="artwork-number">09</div>
+      <img src="images/flower-crowned.jpg" alt="Flower-Crowned Martial God" onerror="this.style.display='none';this.parentNode.style.background='linear-gradient(135deg,#2a3830,#3a5848)'">
+    </div>
+    <div class="artwork-text">
+      <div class="artwork-index">Work No. 09</div>
+      <h2 class="artwork-title">Flower-Crowned Martial God</h2>
+      <div class="artwork-artist">Bethany Halaman</div>
+      <p class="artwork-description">Robed in white and wreathed in swirling jade, he holds a branch of red blossoms like an offering — a god who chose flowers over weapons, and was no less powerful for it.</p>
+      <span class="artwork-tag">Watercolor & Pencil</span>
+    </div>
+  </article>
+
+  <article class="artwork">
+    <div class="artwork-media"><div class="artwork-number">10</div>
+      <img src="images/dolphin-wave.jpg" alt="Dolphin and Wave" onerror="this.style.display='none';this.parentNode.style.background='linear-gradient(135deg,#1a2840,#2a4860)'">
+    </div>
+    <div class="artwork-text">
+      <div class="artwork-index">Work No. 10</div>
+      <h2 class="artwork-title">Untitled</h2>
+      <div class="artwork-artist">&nbsp;</div>
+      <p class="artwork-description">A lone dolphin leaps toward a curling wave twice its size — small against the immensity of the sea, yet utterly unafraid.</p>
+      <span class="artwork-tag">Acrylic</span>
+    </div>
+  </article>
+
+  <article class="artwork">
+    <div class="artwork-media"><div class="artwork-number">11</div>
+      <img src="images/arctic-sparkle.jpg" alt="Arctic Sparkle" onerror="this.style.display='none';this.parentNode.style.background='linear-gradient(135deg,#1a2838,#2a4858)'">
+    </div>
+    <div class="artwork-text">
+      <div class="artwork-index">Work No. 11</div>
+      <h2 class="artwork-title">Arctic Sparkle</h2>
+      <div class="artwork-artist">Bethany Halaman</div>
+      <p class="artwork-description">Two penguins lean into each other against a wash of arctic blue — the smaller one round and solemn, the larger watchful, both of them carrying the tender gravity of belonging.</p>
+      <span class="artwork-tag">Watercolor</span>
+    </div>
+  </article>
+
+  <article class="artwork">
+    <div class="artwork-media"><div class="artwork-number">12</div>
+      <img src="images/quack-of-nature.jpg" alt="Quack of Nature" onerror="this.style.display='none';this.parentNode.style.background='linear-gradient(135deg,#1a3028,#2a5040)'">
+    </div>
+    <div class="artwork-text">
+      <div class="artwork-index">Work No. 12</div>
+      <h2 class="artwork-title">Quack of Nature</h2>
+      <div class="artwork-artist">Bethany Halaman</div>
+      <p class="artwork-description">Two white ducks paddle through a pond alive with lily pads, their orange feet caught mid-stroke beneath the surface — an ordinary moment rendered with the joy of someone who finds the world endlessly worth drawing.</p>
+      <span class="artwork-tag">Watercolor & Pencil</span>
+    </div>
+  </article>
+
+  <article class="artwork">
+    <div class="artwork-media"><div class="artwork-number">13</div>
+      <img src="images/dark-floral.jpg" alt="Dark Floral" onerror="this.style.display='none';this.parentNode.style.background='linear-gradient(135deg,#1a1a28,#2a2a40)'">
+    </div>
+    <div class="artwork-text">
+      <div class="artwork-index">Work No. 13</div>
+      <h2 class="artwork-title">Untitled</h2>
+      <div class="artwork-artist">Bethany Halaman</div>
+      <p class="artwork-description">Pale blooms drift across a field of deep charcoal, blue and cream petals half-emerging from the dark — flowers that do not need light to insist on their own beauty.</p>
+      <span class="artwork-tag">Painting</span>
+    </div>
+  </article>
+
+  <article class="artwork">
+    <div class="artwork-media"><div class="artwork-number">14</div>
+      <img src="images/flowers-of-teyvat.jpg" alt="Flowers of Teyvat" onerror="this.style.display='none';this.parentNode.style.background='linear-gradient(135deg,#1a3020,#2a5030)'">
+    </div>
+    <div class="artwork-text">
+      <div class="artwork-index">Work No. 14</div>
+      <h2 class="artwork-title">Flowers of Teyvat</h2>
+      <div class="artwork-artist">Bethany Halaman</div>
+      <p class="artwork-description">Rendered as a botanist's field study of an imagined world, each flower is labeled with quiet precision — fantasy made tangible, as though these blooms could be pressed between the pages of a real book.</p>
+      <span class="artwork-tag">Ink & Watercolor</span>
+    </div>
+  </article>
+
+  <article class="artwork">
+    <div class="artwork-media"><div class="artwork-number">15</div>
+      <img src="images/butterfly.jpg" alt="Butterfly" onerror="this.style.display='none';this.parentNode.style.background='linear-gradient(135deg,#1a2820,#2a4830)'">
+    </div>
+    <div class="artwork-text">
+      <div class="artwork-index">Work No. 15</div>
+      <h2 class="artwork-title">Untitled</h2>
+      <div class="artwork-artist">&nbsp;</div>
+      <p class="artwork-description">Caught between day and night, a pale green butterfly hovers at the threshold — its wings brushed with starlight, as though it has just crossed from one world into another.</p>
+      <span class="artwork-tag">Acrylic</span>
+    </div>
+  </article>
+
+  <article class="artwork">
+    <div class="artwork-media"><div class="artwork-number">16</div>
+      <img src="images/pink-peonies.jpg" alt="Pink Peonies" onerror="this.style.display='none';this.parentNode.style.background='linear-gradient(135deg,#3a2028,#6a4048)'">
+    </div>
+    <div class="artwork-text">
+      <div class="artwork-index">Work No. 16</div>
+      <h2 class="artwork-title">Untitled</h2>
+      <div class="artwork-artist">&nbsp;</div>
+      <p class="artwork-description">Peonies bloom in loose, urgent strokes against a blush-washed ground — petals unfurling with the kind of abandon that only paint, and perhaps joy, can fully capture.</p>
+      <span class="artwork-tag">Acrylic</span>
+    </div>
+  </article>
+
+  <article class="artwork">
+    <div class="artwork-media"><div class="artwork-number">17</div>
+      <img src="images/quilled-portrait.jpg" alt="Quilled Portrait" onerror="this.style.display='none';this.parentNode.style.background='linear-gradient(135deg,#2a1820,#4a3040)'">
+    </div>
+    <div class="artwork-text">
+      <div class="artwork-index">Work No. 17</div>
+      <h2 class="artwork-title">Untitled</h2>
+      <div class="artwork-artist">&nbsp;</div>
+      <p class="artwork-description">Every curl of paper is a decision, and together they become a face — a Filipino woman rendered in thousands of wound coils, vivid and patient and unmistakably alive.</p>
+      <span class="artwork-tag">Paper Quilling</span>
+    </div>
+  </article>
+
+  <article class="artwork">
+    <div class="artwork-media"><div class="artwork-number">18</div>
+      <img src="images/woman-with-fan.jpg" alt="Woman with Fan" onerror="this.style.display='none';this.parentNode.style.background='linear-gradient(135deg,#3a2818,#6a4828)'">
+    </div>
+    <div class="artwork-text">
+      <div class="artwork-index">Work No. 18</div>
+      <h2 class="artwork-title">Untitled</h2>
+      <div class="artwork-artist">&nbsp;</div>
+      <p class="artwork-description">A woman peers over a lace fan while a white cat holds court beside a melting candle — clocks, roses, and butterflies crowd the frame, and time seems to have agreed to wait.</p>
+      <span class="artwork-tag">Oil on Canvas</span>
+    </div>
+  </article>
+
+  <article class="artwork">
+    <div class="artwork-media"><div class="artwork-number">19</div>
+      <img src="images/carabao-ride.jpg" alt="Carabao Ride" onerror="this.style.display='none';this.parentNode.style.background='linear-gradient(135deg,#2a3018,#4a5028)'">
+    </div>
+    <div class="artwork-text">
+      <div class="artwork-index">Work No. 19</div>
+      <h2 class="artwork-title">Untitled</h2>
+      <div class="artwork-artist">&nbsp;</div>
+      <p class="artwork-description">Two figures ride a carabao through a landscape of bold, swirling color — the fields golden, the sky dreaming in blue, the whole world simplified into the warmth of a single afternoon.</p>
+      <span class="artwork-tag">Colored Pencil</span>
+    </div>
+  </article>
+
+  <article class="artwork">
+    <div class="artwork-media"><div class="artwork-number">20</div>
+      <img src="images/bayanihan.jpg" alt="Bayanihan" onerror="this.style.display='none';this.parentNode.style.background='linear-gradient(135deg,#3a2e18,#6a5028)'">
+    </div>
+    <div class="artwork-text">
+      <div class="artwork-index">Work No. 20</div>
+      <h2 class="artwork-title">Bayanihan</h2>
+      <div class="artwork-artist">&nbsp;</div>
+      <p class="artwork-description">A nipa hut rises on the shoulders of many — bodies straining together beneath bamboo and thatch, a timeless image of the Filipino spirit that finds strength not in one, but in all.</p>
+      <span class="artwork-tag">Watercolor</span>
+    </div>
+  </article>
+
+  <article class="artwork">
+    <div class="artwork-media"><div class="artwork-number">21</div>
+      <img src="images/character-design-1.jpg" alt="Character Design" onerror="this.style.display='none';this.parentNode.style.background='linear-gradient(135deg,#2a1828,#4a2848)'">
+    </div>
+    <div class="artwork-text">
+      <div class="artwork-index">Work No. 21</div>
+      <h2 class="artwork-title">Untitled</h2>
+      <div class="artwork-artist">&nbsp;</div>
+      <p class="artwork-description">A figure assembled from sharp angles and ceremony — robes, ribbons, and a single unblinking eye speak of a character built to be both beautiful and unsettling, laid out with the care of a tailor who stitches nightmares.</p>
+      <span class="artwork-tag">Digital Art</span>
+    </div>
+  </article>
+
+  <article class="artwork">
+    <div class="artwork-media"><div class="artwork-number">22</div>
+      <img src="images/dark-figure-motion.jpg" alt="Dark Figure in Motion" onerror="this.style.display='none';this.parentNode.style.background='linear-gradient(135deg,#181828,#282840)'">
+    </div>
+    <div class="artwork-text">
+      <div class="artwork-index">Work No. 22</div>
+      <h2 class="artwork-title">Untitled</h2>
+      <div class="artwork-artist">&nbsp;</div>
+      <p class="artwork-description">Hair and shadow pour together into a single sweeping current, the figure barely contained by the frame — a portrait of movement so urgent it has forgotten to stop.</p>
+      <span class="artwork-tag">Digital Art</span>
+    </div>
+  </article>
+
+  <article class="artwork">
+    <div class="artwork-media"><div class="artwork-number">23</div>
+      <img src="images/character-design-2.jpg" alt="Character Design 2" onerror="this.style.display='none';this.parentNode.style.background='linear-gradient(135deg,#3a1818,#6a2828)'">
+    </div>
+    <div class="artwork-text">
+      <div class="artwork-index">Work No. 23</div>
+      <h2 class="artwork-title">Untitled</h2>
+      <div class="artwork-artist">&nbsp;</div>
+      <p class="artwork-description">Crowned in flame and dressed in crimson and gold, the figure radiates the confidence of someone who has already won — every detail a declaration, every star earned.</p>
+      <span class="artwork-tag">Digital Art</span>
+    </div>
+  </article>
+
+  <article class="artwork">
+    <div class="artwork-media"><div class="artwork-number">24</div>
+      <img src="images/magenta-flame.jpg" alt="Magenta Flame" onerror="this.style.display='none';this.parentNode.style.background='linear-gradient(135deg,#3a1828,#6a1840)'">
+    </div>
+    <div class="artwork-text">
+      <div class="artwork-index">Work No. 24</div>
+      <h2 class="artwork-title">Untitled</h2>
+      <div class="artwork-artist">&nbsp;</div>
+      <p class="artwork-description">A body unravels upward in spirals of pink and gold, the face dissolving into pure energy — something in the act of becoming, or perhaps of letting go.</p>
+      <span class="artwork-tag">Digital Art</span>
+    </div>
+  </article>
+
+  <article class="artwork">
+    <div class="artwork-media"><div class="artwork-number">25</div>
+      <img src="images/blue-figure.jpg" alt="Blue Figure" onerror="this.style.display='none';this.parentNode.style.background='linear-gradient(135deg,#181828,#183050)'">
+    </div>
+    <div class="artwork-text">
+      <div class="artwork-index">Work No. 25</div>
+      <h2 class="artwork-title">Untitled</h2>
+      <div class="artwork-artist">&nbsp;</div>
+      <p class="artwork-description">Electric blue and hollow-eyed, the figure stares out from a dark ground with an expression that is neither threatening nor afraid — simply present, and watching.</p>
+      <span class="artwork-tag">Digital Art</span>
+    </div>
+  </article>
+
+  <article class="artwork">
+    <div class="artwork-media"><div class="artwork-number">26</div>
+      <img src="images/blue-figure-fish.jpg" alt="Blue Figure with Fish" onerror="this.style.display='none';this.parentNode.style.background='linear-gradient(135deg,#182038,#283858)'">
+    </div>
+    <div class="artwork-text">
+      <div class="artwork-index">Work No. 26</div>
+      <h2 class="artwork-title">Untitled</h2>
+      <div class="artwork-artist">&nbsp;</div>
+      <p class="artwork-description">Draped in pale armor and surrounded by drifting ghost-fish, the figure sits in the stillness of an underwater dream — languid, luminous, and unhurried.</p>
+      <span class="artwork-tag">Digital Art</span>
+    </div>
+  </article>
+
+  <article class="artwork">
+    <div class="artwork-media"><div class="artwork-number">27</div>
+      <img src="images/floral-hat-figure.jpg" alt="Figure with Floral Hat" onerror="this.style.display='none';this.parentNode.style.background='linear-gradient(135deg,#181830,#202050)'">
+    </div>
+    <div class="artwork-text">
+      <div class="artwork-index">Work No. 27</div>
+      <h2 class="artwork-title">Untitled</h2>
+      <div class="artwork-artist">&nbsp;</div>
+      <p class="artwork-description">Soft blue light halos a figure crowned in clouds, one fist extended toward the viewer — gentle in appearance, and yet unmistakably resolute.</p>
+      <span class="artwork-tag">Digital Art</span>
+    </div>
+  </article>
+
+  <article class="artwork">
+    <div class="artwork-media"><div class="artwork-number">28</div>
+      <img src="images/cat-moon.jpg" alt="Cat and Moon" onerror="this.style.display='none';this.parentNode.style.background='linear-gradient(135deg,#181828,#282848)'">
+    </div>
+    <div class="artwork-text">
+      <div class="artwork-index">Work No. 28</div>
+      <h2 class="artwork-title">Untitled</h2>
+      <div class="artwork-artist">&nbsp;</div>
+      <p class="artwork-description">A black cat sits alone on a fence beneath a harvest moon, its silhouette a comma in the sentence of the night — small, still, and entirely at home in the dark.</p>
+      <span class="artwork-tag">Mixed Media</span>
+    </div>
+  </article>
+
+  <article class="artwork">
+    <div class="artwork-media"><div class="artwork-number">29</div>
+      <img src="images/moon-clouds.jpg" alt="Moon Above Clouds" onerror="this.style.display='none';this.parentNode.style.background='linear-gradient(135deg,#101018,#202030)'">
+    </div>
+    <div class="artwork-text">
+      <div class="artwork-index">Work No. 29</div>
+      <h2 class="artwork-title">Untitled</h2>
+      <div class="artwork-artist">&nbsp;</div>
+      <p class="artwork-description">A small golden moon floats above a sea of pale clouds, the sky behind it absolute and dark — quiet enough to hear the night breathe.</p>
+      <span class="artwork-tag">Acrylic</span>
+    </div>
+  </article>
+
+  <article class="artwork">
+    <div class="artwork-media"><div class="artwork-number">30</div>
+      <img src="images/pine-forest.jpg" alt="Pine Forest" onerror="this.style.display='none';this.parentNode.style.background='linear-gradient(135deg,#101828,#182840)'">
+    </div>
+    <div class="artwork-text">
+      <div class="artwork-index">Work No. 30</div>
+      <h2 class="artwork-title">Untitled</h2>
+      <div class="artwork-artist">&nbsp;</div>
+      <p class="artwork-description">Silhouetted pines rise against a sky that cannot decide between fire and calm, birds threading through the in-between — a landscape that holds both endings and beginnings at once.</p>
+      <span class="artwork-tag">Watercolor</span>
+    </div>
+  </article>
+
+  <article class="artwork">
+    <div class="artwork-media"><div class="artwork-number">31</div>
+      <img src="images/two-profiles.jpg" alt="Two Profiles" onerror="this.style.display='none';this.parentNode.style.background='linear-gradient(135deg,#282018,#483830)'">
+    </div>
+    <div class="artwork-text">
+      <div class="artwork-index">Work No. 31</div>
+      <h2 class="artwork-title">Untitled</h2>
+      <div class="artwork-artist">&nbsp;</div>
+      <p class="artwork-description">Two faces turned in profile, separated by a black seam — one wrapped in green and shadow, the other in gold and firelight, as though the same story told from opposite ends.</p>
+      <span class="artwork-tag">Marker & Ink</span>
+    </div>
+  </article>
+
+  <article class="artwork">
+    <div class="artwork-media"><div class="artwork-number">32</div>
+      <img src="images/folk-dance.jpg" alt="Folk Dance" onerror="this.style.display='none';this.parentNode.style.background='linear-gradient(135deg,#2a3020,#4a5038)'">
+    </div>
+    <div class="artwork-text">
+      <div class="artwork-index">Work No. 32</div>
+      <h2 class="artwork-title">Untitled</h2>
+      <div class="artwork-artist">Almires, Patrniah May D.</div>
+      <p class="artwork-description">Beneath an open sky and a line of blue mountains, couples dance to a strummed guitar, bare feet on warm earth — a scene that smells of dust and celebration and does not want to end.</p>
+      <span class="artwork-tag">Colored Pencil</span>
+    </div>
+  </article>
+
+  <article class="artwork">
+    <div class="artwork-media"><div class="artwork-number">33</div>
+      <img src="images/three-generations.jpg" alt="Three Generations" onerror="this.style.display='none';this.parentNode.style.background='linear-gradient(135deg,#2a3828,#4a5848)'">
+    </div>
+    <div class="artwork-text">
+      <div class="artwork-index">Work No. 33</div>
+      <h2 class="artwork-title">Untitled</h2>
+      <div class="artwork-artist">&nbsp;</div>
+      <p class="artwork-description">A grandmother, a child, and a young mother with a baby gather in a bamboo courtyard under a golden sun — the quiet grammar of family, rendered with tender, unhurried lines.</p>
+      <span class="artwork-tag">Colored Pencil</span>
+    </div>
+  </article>
+
+  <article class="artwork">
+    <div class="artwork-media"><div class="artwork-number">34</div>
+      <img src="images/fireworks.jpg" alt="Fireworks" onerror="this.style.display='none';this.parentNode.style.background='linear-gradient(135deg,#101828,#182848)'">
+    </div>
+    <div class="artwork-text">
+      <div class="artwork-index">Work No. 34</div>
+      <h2 class="artwork-title">Untitled</h2>
+      <div class="artwork-artist">Mani, Jamie Rocel C.</div>
+      <p class="artwork-description">Friends sit shoulder to shoulder watching fireworks burst across a dark sky, one arm raised in pure delight — a painting that knows youth is not a time, but a feeling shared.</p>
+      <span class="artwork-tag">Acrylic</span>
+    </div>
+  </article>
+
+  <article class="artwork">
+    <div class="artwork-media"><div class="artwork-number">35</div>
+      <img src="images/arts-and-crafts.jpg" alt="Arts and Crafts" onerror="this.style.display='none';this.parentNode.style.background='linear-gradient(135deg,#3a2818,#6a4828)'">
+    </div>
+    <div class="artwork-text">
+      <div class="artwork-index">Work No. 35</div>
+      <h2 class="artwork-title">Arts &amp; Crafts</h2>
+      <div class="artwork-artist">Kaira Louise P. Monis</div>
+      <p class="artwork-description">A woman bends over her loom in steady concentration, surrounded by the symbols of Ilocano craft — abel weave, rattan, and bloom — a tribute to hands that make beauty out of discipline.</p>
+      <span class="artwork-tag">Mixed Media</span>
+    </div>
+  </article>
+
+  <article class="artwork">
+    <div class="artwork-media"><div class="artwork-number">36</div>
+      <img src="images/five-friends.jpg" alt="Five Friends" onerror="this.style.display='none';this.parentNode.style.background='linear-gradient(135deg,#1a2818,#2a4828)'">
+    </div>
+    <div class="artwork-text">
+      <div class="artwork-index">Work No. 36</div>
+      <h2 class="artwork-title">Untitled</h2>
+      <div class="artwork-artist">&nbsp;</div>
+      <p class="artwork-description">Five young men strike playful poses in front of a wooden house, ankle-deep in blue water and clearly unbothered — the ease of friendship caught in the middle of an ordinary afternoon.</p>
+      <span class="artwork-tag">Colored Pencil</span>
+    </div>
+  </article>
+
+  <article class="artwork">
+    <div class="artwork-media"><div class="artwork-number">37</div>
+      <img src="images/mangoes-flag.jpg" alt="Mangoes and Flag" onerror="this.style.display='none';this.parentNode.style.background='linear-gradient(135deg,#2a3020,#4a5038)'">
+    </div>
+    <div class="artwork-text">
+      <div class="artwork-index">Work No. 37</div>
+      <h2 class="artwork-title">Untitled</h2>
+      <div class="artwork-artist">&nbsp;</div>
+      <p class="artwork-description">She holds a basket of mangoes with closed eyes and a quiet smile, the Philippine flag unfurling behind her like a breath — harvest and homeland held in the same gentle arms.</p>
+      <span class="artwork-tag">Colored Pencil</span>
+    </div>
+  </article>
+
+</div>
+
+<!-- THE TEAM -->
+<section class="team">
+  <p class="team-label">Behind the Exhibition</p>
+  <h2 class="team-title">The <em>Team</em></h2>
+  <div class="team-rule"></div>
+  <div class="team-names">
+    <span class="team-name">AubreyHaille Abalos</span><span class="team-separator">✦</span>
+    <span class="team-name">Bethany Halaman</span><span class="team-separator">✦</span>
+    <span class="team-name">Cedric Villanueva</span><span class="team-separator">✦</span>
+    <span class="team-name">Dawn Krizzle Manaois</span><span class="team-separator">✦</span>
+    <span class="team-name">Derek Mortera</span><span class="team-separator">✦</span>
+    <span class="team-name">Eu Sophia Grace Dagacan</span><span class="team-separator">✦</span>
+    <span class="team-name">Jade Lawrence Ancheta</span><span class="team-separator">✦</span>
+    <span class="team-name">Jamie Rocel C. Mani</span><span class="team-separator">✦</span>
+    <span class="team-name">Janwyn Christopher Cortado</span><span class="team-separator">✦</span>
+    <span class="team-name">Jerome Sacopaso</span><span class="team-separator">✦</span>
+    <span class="team-name highlight">Keisha Nicole Reodique</span><span class="team-separator">✦</span>
+    <span class="team-name highlight">Asher Clyde Maala</span><span class="team-separator">✦</span>
+    <span class="team-name">Jorelyn Colline</span><span class="team-separator">✦</span>
+    <span class="team-name">Kaira Louise Monis</span><span class="team-separator">✦</span>
+    <span class="team-name">Krissa Mae Noto</span><span class="team-separator">✦</span>
+    <span class="team-name">Kurt Guerrin</span><span class="team-separator">✦</span>
+    <span class="team-name">Lopez Maser</span><span class="team-separator">✦</span>
+    <span class="team-name">Nympha Brillantes</span>
+  </div>
+</section>
+
+<div class="closing">
+  <div class="closing-ornament">✦ &nbsp; ✦ &nbsp; ✦</div>
+  <h2>End of Exhibition</h2>
+  <p>La Galeria Filipina &nbsp;·&nbsp; All works remain property of their respective artists.</p>
+</div>
+
+<script>
+  const artworks = document.querySelectorAll('.artwork');
+  document.getElementById('navCounter').textContent =
+    artworks.length + ' Work' + (artworks.length !== 1 ? 's' : '') + ' on Display';
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) entry.target.classList.add('visible');
+    });
+  }, { threshold: 0.1 });
+
+  artworks.forEach(a => observer.observe(a));
+</script>
+</body>
+</html>
