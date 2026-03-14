@@ -124,7 +124,6 @@
   .team {
     padding: 8rem 4rem;
     border-top: 1px solid var(--border);
-    text-align: center;
     position: relative;
   }
 
@@ -136,19 +135,74 @@
     pointer-events: none;
   }
 
+  .team-header { text-align: center; margin-bottom: 5rem; }
   .team-label { font-size: 0.68rem; letter-spacing: 0.4em; text-transform: uppercase; color: var(--gold); margin-bottom: 1rem; }
   .team-title { font-family: 'Playfair Display', serif; font-size: clamp(2.5rem, 5vw, 4.5rem); font-weight: 400; color: var(--cream); margin-bottom: 1rem; }
   .team-title em { font-style: italic; color: var(--gold); }
 
-  .team-rule { width: 80px; height: 1px; background: linear-gradient(to right, transparent, var(--gold), transparent); margin: 2rem auto 4rem; }
+  .team-rule { width: 80px; height: 1px; background: linear-gradient(to right, transparent, var(--gold), transparent); margin: 2rem auto 0; }
+
+  .team-body {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    max-width: 1100px;
+    margin: 0 auto;
+    align-items: center;
+  }
+
+  .team-photo {
+    position: relative;
+  }
+
+  .team-photo img {
+    width: 100%;
+    height: 480px;
+    object-fit: cover;
+    display: block;
+    filter: sepia(0.15) contrast(1.05);
+    border: 1px solid var(--border);
+  }
+
+  .team-photo-placeholder {
+    width: 100%;
+    height: 480px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    color: var(--gold-dim);
+  }
+
+  .team-photo-placeholder span:first-child {
+    font-size: 2rem;
+    opacity: 0.4;
+  }
+
+  .team-photo-placeholder span:last-child {
+    font-size: 0.7rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+  }
+
+  .team-photo::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border: 1px solid var(--gold-dim);
+    transform: translate(10px, 10px);
+    z-index: -1;
+    opacity: 0.3;
+  }
 
   .team-names {
     display: flex;
     flex-wrap: wrap;
-    justify-content: center;
+    justify-content: flex-start;
     gap: 0.4rem 0;
-    max-width: 900px;
-    margin: 0 auto;
   }
 
   .team-name {
@@ -193,6 +247,9 @@
     .artwork-text { padding: 3rem 1.8rem; }
     .artwork-text::before { display: none; }
     .team { padding: 5rem 2rem; }
+    .team-body { grid-template-columns: 1fr; gap: 3rem; }
+    .team-photo img, .team-photo-placeholder { height: 300px; }
+    .team-names { justify-content: center; }
   }
 </style>
 </head>
@@ -697,28 +754,41 @@
 
 <!-- THE TEAM -->
 <section class="team">
-  <p class="team-label">Behind the Exhibition</p>
-  <h2 class="team-title">The <em>Team</em></h2>
-  <div class="team-rule"></div>
-  <div class="team-names">
-    <span class="team-name">AubreyHaille Abalos</span><span class="team-separator">✦</span>
-    <span class="team-name">Bethany Halaman</span><span class="team-separator">✦</span>
-    <span class="team-name">Cedric Villanueva</span><span class="team-separator">✦</span>
-    <span class="team-name">Dawn Krizzle Manaois</span><span class="team-separator">✦</span>
-    <span class="team-name">Derek Mortera</span><span class="team-separator">✦</span>
-    <span class="team-name">Eu Sophia Grace Dagacan</span><span class="team-separator">✦</span>
-    <span class="team-name">Jade Lawrence Ancheta</span><span class="team-separator">✦</span>
-    <span class="team-name">Jamie Rocel C. Mani</span><span class="team-separator">✦</span>
-    <span class="team-name">Janwyn Christopher Cortado</span><span class="team-separator">✦</span>
-    <span class="team-name">Jerome Sacopaso</span><span class="team-separator">✦</span>
-    <span class="team-name highlight">Keisha Nicole Reodique</span><span class="team-separator">✦</span>
-    <span class="team-name highlight">Asher Clyde Maala</span><span class="team-separator">✦</span>
-    <span class="team-name">Jorelyn Colline</span><span class="team-separator">✦</span>
-    <span class="team-name">Kaira Louise Monis</span><span class="team-separator">✦</span>
-    <span class="team-name">Krissa Mae Noto</span><span class="team-separator">✦</span>
-    <span class="team-name">Kurt Guerrin</span><span class="team-separator">✦</span>
-    <span class="team-name">Lopez Maser</span><span class="team-separator">✦</span>
-    <span class="team-name">Nympha Brillantes</span>
+  <div class="team-header">
+    <p class="team-label">Behind the Exhibition</p>
+    <h2 class="team-title">The <em>Team</em></h2>
+    <div class="team-rule"></div>
+  </div>
+  <div class="team-body">
+    <!-- GROUP PHOTO: replace images/team-photo.jpg with your actual group photo filename -->
+    <div class="team-photo">
+      <img src="images/team-photo.jpg" alt="The Team"
+        onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+      <div class="team-photo-placeholder" style="display:none;">
+        <span>✦</span>
+        <span>Place group photo here</span>
+      </div>
+    </div>
+    <div class="team-names">
+      <span class="team-name">AubreyHaille Abalos</span><span class="team-separator">✦</span>
+      <span class="team-name">Bethany Halaman</span><span class="team-separator">✦</span>
+      <span class="team-name">Cedric Villanueva</span><span class="team-separator">✦</span>
+      <span class="team-name">Dawn Krizzle Manaois</span><span class="team-separator">✦</span>
+      <span class="team-name">Derek Mortera</span><span class="team-separator">✦</span>
+      <span class="team-name">Eu Sophia Grace Dagacan</span><span class="team-separator">✦</span>
+      <span class="team-name">Jade Lawrence Ancheta</span><span class="team-separator">✦</span>
+      <span class="team-name">Jamie Rocel C. Mani</span><span class="team-separator">✦</span>
+      <span class="team-name">Janwyn Christopher Cortado</span><span class="team-separator">✦</span>
+      <span class="team-name">Jerome Sacopaso</span><span class="team-separator">✦</span>
+      <span class="team-name highlight">Keisha Nicole Reodique</span><span class="team-separator">✦</span>
+      <span class="team-name highlight">Asher Clyde Maala</span><span class="team-separator">✦</span>
+      <span class="team-name">Jorelyn Colline</span><span class="team-separator">✦</span>
+      <span class="team-name">Kaira Louise Monis</span><span class="team-separator">✦</span>
+      <span class="team-name">Krissa Mae Noto</span><span class="team-separator">✦</span>
+      <span class="team-name">Kurt Guerrin</span><span class="team-separator">✦</span>
+      <span class="team-name">Lopez Maser</span><span class="team-separator">✦</span>
+      <span class="team-name">Nympha Brillantes</span>
+    </div>
   </div>
 </section>
 
